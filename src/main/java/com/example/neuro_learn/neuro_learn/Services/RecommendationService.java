@@ -11,7 +11,7 @@ public class RecommendationService {
 
     private final RestTemplate restTemplate;
     private final GeminiRecommendationAgent geminiAgent;
-    private final String youtubeApi; // Injected via constructor
+    private final String youtubeApi;
 
     public RecommendationService(
             RestTemplate restTemplate,
@@ -22,28 +22,21 @@ public class RecommendationService {
         this.youtubeApi = youtubeApi;
     }
 
-    public String fetchRecommendations(String topic) {
+    // Fetch AI-powered text recommendations
+    public String fetchTextRecommendations(String topic) {
         topic = topic.trim().replace("\"", "");
         StringBuilder result = new StringBuilder();
-
         try {
-            // 🔮 Gemini Recommendation (LangChain)
             result.append("🧠 **AI-Powered Suggestions:**\n");
-            result.append(geminiAgent.generateRecommendations(topic)).append("\n\n");
-
-            // 🎥 YouTube
-            result.append(fetchYoutubeVideos(topic)).append("\n");
-
-            // 📚 Course Links
-            result.append(fetchFreeCourses(topic));
+            result.append(geminiAgent.generateRecommendations(topic)).append("\n");
         } catch (Exception e) {
             result.append("⚠️ Error while fetching recommendations: ").append(e.getMessage());
         }
-
         return result.toString();
     }
 
-    private String fetchYoutubeVideos(String topic) {
+    // Fetch YouTube video recommendations
+    public String fetchYoutubeRecommendations(String topic) {
         String url = "https://www.googleapis.com/youtube/v3/search?part=snippet&q=" +
                 topic + "+course+tutorial&maxResults=5&type=video&key=" + youtubeApi;
 
@@ -68,7 +61,8 @@ public class RecommendationService {
         return youtubeResults.toString();
     }
 
-    private String fetchFreeCourses(String topic) {
+    // Fetch free course recommendations
+    public String fetchCourseRecommendations(String topic) {
         String encodedTopic = topic.replace(" ", "%20");
 
         StringBuilder coursesResults = new StringBuilder("📚 **Free Course Recommendations:**\n");

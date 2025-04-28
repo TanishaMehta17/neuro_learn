@@ -9,5 +9,5 @@ import com.example.neuro_learn.neuro_learn.Entities.User;
 @Repository
 public interface UserRepo extends JpaRepository<User,Long>{
     Optional<User> findByEmail(String email);
-
+    Optional<User>findById(Long id);
 }

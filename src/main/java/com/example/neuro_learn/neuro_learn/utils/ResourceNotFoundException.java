@@ -8,11 +8,11 @@ public class ResourceNotFoundException extends RuntimeException {
      String fieldValue;
      boolean isPresent;
 
-    public ResourceNotFoundException(String resourceName, String fieldName, String fieldValue, boolean isPresent) {
-        super(generateMessage(resourceName, fieldName, fieldValue, isPresent));
+    public ResourceNotFoundException(String resourceName, String fieldName, String taskId, boolean isPresent) {
+        super(generateMessage(resourceName, fieldName, taskId, isPresent));
         this.resourceName = resourceName;
         this.fieldName = fieldName;
-        this.fieldValue = fieldValue;
+        this.fieldValue = toString();
         this.isPresent = isPresent;
     }
 

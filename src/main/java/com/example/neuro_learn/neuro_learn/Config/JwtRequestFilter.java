@@ -1,3 +1,4 @@
+
 package com.example.neuro_learn.neuro_learn.Config;
 
 import java.io.IOException;
@@ -17,8 +18,8 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter  {
-      
-     @Autowired
+
+    @Autowired
     private CustomUserDetailsService userDetailsService;
 
     @Autowired
@@ -34,16 +35,20 @@ public class JwtRequestFilter extends OncePerRequestFilter  {
 
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             jwt = authHeader.substring(7);
-            username = jwtUtil.extractUsername(jwt);
+            try {
+                username = jwtUtil.extractUsername(jwt);
+            } catch (Exception e) {
+                System.out.println("Unable to extract username from token");
+            }
         }
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
-            if (jwtUtil.validateToken(jwt, userDetails)) {
-                UsernamePasswordAuthenticationToken token =
+            if (jwtUtil.validateToken(jwt)) {
+                UsernamePasswordAuthenticationToken authToken =
                         new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                token.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(token);
+                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authToken);
             }
         }
         chain.doFilter(request, response);

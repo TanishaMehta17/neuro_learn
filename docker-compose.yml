@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  personalized-learning-backend:
+    build: .
+    image: personalized-learning-backend:latest
+    container_name: personalized-learning-backend
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_DATASOURCE_URL=jdbc:mysql://host.docker.internal:3306/neuro_learn  # Ensure this is updated
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - YOUTUBE_API_KEY=${YOUTUBE_API_KEY}
+    volumes:
+      - ./application.properties:/app/application.properties
+      - ./application-secrets.properties:/app/application-secrets.properties
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

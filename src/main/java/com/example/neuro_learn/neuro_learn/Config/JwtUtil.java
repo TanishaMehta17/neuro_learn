@@ -1,11 +1,9 @@
+
 package com.example.neuro_learn.neuro_learn.Config;
 
 import java.util.Base64;
 import java.util.Date;
 
-
-
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Jwts;
@@ -25,6 +23,7 @@ public class JwtUtil {
         secretKeyBytes = Base64.getDecoder().decode(secret);
     }
 
+    // ✅ Generate Token
     public String generateToken(String username) {
         return Jwts.builder()
             .setSubject(username)
@@ -34,6 +33,7 @@ public class JwtUtil {
             .compact();
     }
 
+    // ✅ Extract Username from Token (Subject)
     public String extractUsername(String token) {
         return Jwts.parser()
             .setSigningKey(secretKeyBytes)
@@ -42,11 +42,12 @@ public class JwtUtil {
             .getSubject();
     }
 
-    public boolean validateToken(String token, UserDetails userDetails) {
-        String username = extractUsername(token);
-        return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
+    // ✅ Validate Token (No need for UserDetails here, only check expiration)
+    public boolean validateToken(String token) {
+        return !isTokenExpired(token); // Validate based on expiration
     }
 
+    // ✅ Check if Token is Expired
     private boolean isTokenExpired(String token) {
         return Jwts.parser()
             .setSigningKey(secretKeyBytes)
